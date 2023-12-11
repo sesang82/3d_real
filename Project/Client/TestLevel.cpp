@@ -103,25 +103,24 @@ void CreateTestLevel()
 	pParent->AddComponent(new CTransform);
 	pParent->AddComponent(new CMeshRender);
 	pParent->AddComponent(new CCollider2D);
-	pParent->AddComponent(new CAnimator2D);
 	pParent->AddComponent(new CPlayerScript);
 
 	pParent->Transform()->SetRelativeScale(Vec3(200.f, 200.f, 1.f));
 
-	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std2DAnimLightMtrl"));
+	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
+	pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
-	pParent->Collider2D()->SetAbsolute(true);
-	pParent->Collider2D()->SetOffsetScale(Vec2(150.f, 150.f));
+	//pParent->Collider2D()->SetAbsolute(true);
+	//pParent->Collider2D()->SetOffsetScale(Vec2(150.f, 150.f));
 
-	Ptr<CTexture> pAnimAtlas = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\link.png");
-	pParent->Animator2D()->CreateAnimation(L"WalkDown", pAnimAtlas, Vec2(0.f, 520.f), Vec2(120.f, 130.f), Vec2(300.f, 300.f), 10, 16);
-	pParent->Animator2D()->CreateAnimation(L"WalkLeft", pAnimAtlas, Vec2(0.f, 650.f), Vec2(120.f, 130.f), Vec2(300.f, 300.f), 10, 16);
-	pParent->Animator2D()->Play(L"WalkLeft", true);
+	//Ptr<CTexture> pAnimAtlas = CResMgr::GetInst()->FindRes<CTexture>(L"texture\\link.png");
+	//pParent->Animator2D()->CreateAnimation(L"WalkDown", pAnimAtlas, Vec2(0.f, 520.f), Vec2(120.f, 130.f), Vec2(300.f, 300.f), 10, 16);
+	//pParent->Animator2D()->CreateAnimation(L"WalkLeft", pAnimAtlas, Vec2(0.f, 650.f), Vec2(120.f, 130.f), Vec2(300.f, 300.f), 10, 16);
+	//pParent->Animator2D()->Play(L"WalkLeft", true);
 
 	SpawnGameObject(pParent, Vec3(0.f, 0.f, 500.f), L"Player");
 
-
+	/* 자식
 	CGameObject* pChild = new CGameObject;
 
 	pChild->SetName(L"Child");
@@ -138,8 +137,10 @@ void CreateTestLevel()
 
 	pParent->AddChild(pChild);
 
+	*/
+
 	// Monster
-	CGameObject* pMonster = new CGameObject;
+	/*CGameObject* pMonster = new CGameObject;
 	pMonster->SetName(L"Monster");
 
 	pMonster->AddComponent(new CTransform);
@@ -160,11 +161,11 @@ void CreateTestLevel()
 	pMonster->Collider2D()->SetAbsolute(true);
 	pMonster->Collider2D()->SetOffsetScale(Vec2(100.f, 100.f));
 
-	SpawnGameObject(pMonster, Vec3(0.f, 250.f, 100.f), L"Monster");
+	SpawnGameObject(pMonster, Vec3(0.f, 250.f, 100.f), L"Monster"); */
 
 
 	// TileMap Object
-	CGameObject* pTileMap = new CGameObject;
+/*	CGameObject* pTileMap = new CGameObject;
 	pTileMap->SetName(L"TileMap");
 
 	pTileMap->AddComponent(new CTransform);
@@ -177,9 +178,10 @@ void CreateTestLevel()
 	pTileMap->TileMap()->SetSliceSize(Vec2(0.125f, 0.166f));
 	pTileMap->TileMap()->SetTileCount(8, 8);
 
-	SpawnGameObject(pTileMap, Vec3(0.f, 0.f, 600.f), L"Tile");
+	SpawnGameObject(pTileMap, Vec3(0.f, 0.f, 600.f), L"Tile"); */
 
 	// Particle Object
+	/*
 	CGameObject* pParticleObj = new CGameObject;
 	pParticleObj->SetName(L"ParticleObject");
 	pParticleObj->AddComponent(new CTransform);
@@ -187,18 +189,19 @@ void CreateTestLevel()
 
 	pParticleObj->ParticleSystem();
 
-	SpawnGameObject(pParticleObj, Vec3(0.f, 0.f, 0.f), 0);
+	SpawnGameObject(pParticleObj, Vec3(0.f, 0.f, 0.f), 0); */
 
 
+	// post process
 	/*CGameObject* pPostProcess = new CGameObject;
 	pPostProcess->SetName(L"PostProcess");
 	pPostProcess->AddComponent(new CTransform);
 	pPostProcess->AddComponent(new CMeshRender);
 	pPostProcess->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pPostProcess->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"GrayMtrl"));
-	SpawnGameObject(pPostProcess, Vec3(0.f, 0.f, 0.f), 0);*/
+	SpawnGameObject(pPostProcess, Vec3(0.f, 0.f, 0.f), 0);
 
-	/*CGameObject* pDistortion = new CGameObject;
+	CGameObject* pDistortion = new CGameObject;
 	pDistortion->SetName(L"Distortion");
 	pDistortion->AddComponent(new CTransform);
 	pDistortion->AddComponent(new CMeshRender);
@@ -210,5 +213,5 @@ void CreateTestLevel()
 	
 	
 	// 충돌 시킬 레이어 짝 지정
-	CCollisionMgr::GetInst()->LayerCheck(L"Player", L"Monster");	
+	//CCollisionMgr::GetInst()->LayerCheck(L"Player", L"Monster");	
 }

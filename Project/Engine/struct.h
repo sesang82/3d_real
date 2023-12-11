@@ -7,8 +7,12 @@ struct tVertex
 	Vec3 vPos;
 	Vec4 vColor;
 	Vec2 vUV;
-};
 
+	// ===== 3D (물체의 표면 정보들)
+	Vec3 vNormal; // 노말 벡터(평면을 수직으로 뻗어나가는 노말, 빛의 방향)
+	Vec3 vTangent;
+	Vec3 vBinormal;
+}; 
 typedef tVertex Vtx;
 
 

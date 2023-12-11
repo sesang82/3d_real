@@ -12,6 +12,8 @@ struct VS_IN
 
 struct VS_OUT
 {
+    // sv_postion 시멘틱을 쓰는 것에다가 값을 담아주면 레스터라이저 단계에서 NDC 상에서의 좌표라 생각하고 가져다 씀 
+    // 그리고 그걸 토대로 호출할 픽셀들을 찾아냄
     float4 vPosition : SV_Position;
     float4 vColor : COLOR;
     float2 vUV : TEXCOORD;
@@ -33,6 +35,13 @@ struct VS_OUT
 VS_OUT VS_Std2D(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
+    
+    // 원래 정석대로라면 ndc좌표계까지 보내주기 위해 w값으로 xyz를 나눠줘야했다.(아래처럼)
+    // 그런데도 아래처럼 안해도 되냐면 sv_postion시멘틱을 부여한 값에다가 투영행렬까지 곱해준 것을 넣어주면
+    // 그 값을 가지고 레스터라이저가 w값으로 알아서 나눠 써서 ndc좌표계로 보내주기 때문 
+    /* float4 vProjPos = mul(float4(_in.vLocalPos, 1.f), g_matWVP);
+    vProjPos.xyz /= vProjPos.w; */
+    
     
     output.vPosition = mul(float4(_in.vLocalPos, 1.f), g_matWVP);
     output.vUV = _in.vUV;
