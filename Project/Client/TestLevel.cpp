@@ -106,7 +106,8 @@ void CreateTestLevel()
 
 	pParent->Transform()->SetRelativeScale(Vec3(200.f, 200.f, 200.f));
 
-	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
+	//pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
+	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 	SpawnGameObject(pParent, Vec3(0.f, 0.f, 500.f), L"Player");
