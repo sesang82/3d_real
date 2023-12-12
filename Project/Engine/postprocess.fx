@@ -26,8 +26,8 @@ VS_OUT VS_GrayShader(VS_IN _in)
 {
 	VS_OUT output = (VS_OUT)0.f;
 
-	//output.vPosition = float4(_in.vLocalPos * 2.f, 1.f);	
-
+	output.vPosition = float4(_in.vLocalPos * 2.f, 1.f);	
+    
 	output.vUV = _in.vUV;
 
 	return output;
@@ -44,7 +44,9 @@ float4 PS_GrayShader(VS_OUT _in) : SV_Target
 	
     float vAver = (vColor.r + vColor.g + vColor.b) / 3.f;
 
-    vColor = float4(vAver, vAver, vAver, 1.f);
+    //vColor = float4(vAver, vAver, vAver, 1.f);
+	
+    vColor = float4(1.f, 0.f, 0.f, 1.f);
   
 	return vColor;
 }
@@ -67,7 +69,7 @@ VS_OUT VS_Distortion(VS_IN _in)
 	// 레스터라이저에서는 로컬포즈의 xyz값을 w값을 나눠 쓰기 때문에 화면 전체에 뜨게 하고 싶으니 1로 준것
 	// (0으로 하면 곱해봤자 0이 되버리므로). 만약에 화면 전체가 아닌 절반에만 적용하고 싶다면
 	// w값을 2.f로 줘버리면 된다. 
-    output.vPosition = float4(_in.vLocalPos * 2.f, 1.f);	
+	output.vPosition = mul(float4(_in.vLocalPos, 1.f), g_matWVP);	
 	output.vUV = _in.vUV;
 
 	return output;

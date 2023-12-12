@@ -177,7 +177,6 @@ void CResMgr::CreateDefaultMesh()
 	vecIdx.clear();
 
 
-
 	// ========
 	// CubeMesh
 	// ========
@@ -326,12 +325,6 @@ void CResMgr::CreateDefaultMesh()
 	pMesh->Create(arrCube, 24, vecIdx.data(), (UINT)vecIdx.size());
 	AddRes<CMesh>(L"CubeMesh", pMesh);
 	vecIdx.clear();
-
-
-
-
-
-
 }
 
 void CResMgr::CreateDefaultGraphicsShader()
@@ -531,15 +524,13 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->AddScalarParam(INT_0, "Color Type");
 	pShader->AddTexParam(TEX_0, "Output Texture");
 
-	AddRes(pShader->GetKey(), pShader);
-
 
 
 	// ============================
 	// Std3DShader
-	// RS_TYPE : CULL_BACK 
+	// RS_TYPE : CULL_BACK
 	// DS_TYPE : LESS
-	// BS_TYPE : DEFAULT	 
+	// BS_TYPE : DEFAULT
 	// Domain : MASK
 	// ============================
 	pShader = new CGraphicsShader;
@@ -552,12 +543,8 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
-	// Parameter
-	/*pShader->AddScalarParam(INT_0, "Color Type");
-	pShader->AddTexParam(TEX_0, "Output Texture");*/
+	// Parameter	
 
-
-	// 리소스로 등록 
 	AddRes(pShader->GetKey(), pShader);
 }
 
@@ -641,11 +628,10 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"TestShader"));
 	AddRes(L"TestShaderMtrl", pMtrl);
 
-	// std3D 재질
+	// Std3DMtrl	
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DShader"));
 	AddRes(L"Std3DMtrl", pMtrl);
-
 
 }
 
