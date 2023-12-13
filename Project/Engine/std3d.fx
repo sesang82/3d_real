@@ -9,7 +9,10 @@ static float3 g_vLightPos = float3(0.f, 0.f, 0.f);  // 월드 상에서 광원 위치를 �
 static float3 g_vLightDir = float3(1.f, -1.f, 1.f); // 빛의 방향 
 
 static float3 g_vLightColor = float3(1.f, 1.f, 1.f);
-static float3 g_vLightSpec = float3(0.3f, 0.3f, 0.3f);
+//static float g_vLightSpec = float3(0.3f, 0.3f, 0.3f);
+static float g_fLightSpecCoeff = 0.3f; // 최대 반사광 색상
+
+
 // 환경광 (레이트레이싱 기법을 쓰지 않으면 아래처럼 기본적인 환경광 수치를 그냥 부여한다)
 static float3 g_vLightAmb = float3(0.15f, 0.15f, 0.15f); 
 
@@ -27,7 +30,10 @@ struct VS_OUT
     float2 vUV : TEXCOORD;   
     
    // float fLightPow : FOG; // fog : float하나를 넘길 때 쓰는 시멘틱이다.
-    float3 vWorldNormal : NORMAL;
+    
+    // 뷰 스페이스 기준으로 라이팅 연산을 위해 아래처럼 이름 지어줌
+    float3 vViewPos : POSITION; 
+    float3 vViewNormal : NORMAL;
 };
 
 
@@ -44,7 +50,15 @@ VS_OUT VS_Std3D(VS_IN _in)
     
      월드행렬에는 이동과 크기 값도 같이 있다. 우리는 회전값만 필요로 하므로 이동과 크기는 적용받게 해선 안된다. 
     때문에 아래 노말 값의 w값은 0으로 확대. 크기도 늘어난 상태일 수 있으므로 길이를 1로 만들어야하기 땜에 normalize해준다 */
-    output.vWorldNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWorld)).xyz;
+    //output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWorld)).xyz;
+    
+    // === 모든 연산을 뷰 스페이스를 기준으로 둔다. 즉, 카메라를 원점으로 보낸 상황. 또한 카메라가 보는 방향이 z축이 됨
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
+     
+    
+    // 입력으로 들어온 정점에다가 뷰스페이스를 곱하여, 뷰스페이스상의 정점의 위치를 구해낸다.
+    // 좌표를 구하는거기 때문에 w값은 1로 둔다. 이 값이 픽셀쉐이더로 넘어가게 되면 보간된 뷰공간에서의 픽셀들의 좌표도 알아낼 수 있게 된다.
+    output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV);
     
     
     // 물체의 위치에는 이동 값도 적용되야하므로 w값을 1로 설정 
@@ -59,26 +73,75 @@ VS_OUT VS_Std3D(VS_IN _in)
 
 
 // 픽셀 단위로 좀 더 정밀한 빛 연산을 한다.
+// 입력에 들어오는 것은 이제 뷰 스페이스 기준의 노말 정보가 들어오게 된다. 
 float4 PS_Std3D(VS_OUT _in) : SV_Target
 {
-    float4 vOutColor = (float4) 0.f;
+    float4 vOutColor = float4(0.5f, 0.5f, 0.5f, 1.f);
     
-    vOutColor = float4(0.5f, 0.5f, 0.5f, 1.f);
     
-        // 월드상에서의 광원의 방향
-    g_vLightDir = normalize(g_vLightDir);
+    if(g_btex_0)
+    {
+        vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+    }
     
+    
+    
+    // 월드상에서의 광원의 방향
+   // g_vLightDir = normalize(g_vLightDir);
+    
+    // View상에서의 광원의 방향
+    // 0으로 두는 이유는 방향이기 때문에 행렬의 크기나 이동에 적용을 받지 않기 위해서다.
+    // g_matView를 곱해주는 이유는 g_vLightDir의 초기값을 월드를 기준으로 뒀기 때문에 이것을 뷰스페이스로 보내기 위함
+    // 맨 앞에 다시 normalize를 하는 이유는 g_matView 안에는 이동 크기 정보도 있기 때문에 혹시몰라서 방향 정보를 정확하게 유지하기 위해서 해둠
+    float3 vViewLightDir = normalize(mul(float4(normalize(g_vLightDir), 0.f), g_matView)).xyz;
         
+    
+    
    // -- 정점에 들어오는 빛의 세기가 어느정도인지에 대해 계산한다.
     // 길이를 1로 만들어준 광원의 역방향과 월드 상의 노말 벡터를 내적한다. 
     // 이런 방법을 '램버트 코사인 법칙'이라고 한다. 
     // 빛의 세기는 빛을 안받는다 하더라도 음수로 빠지게 두면 안된다. 코싸인 그래프에 의하면 음수로 빠지면 빛을 빨아들이는 형태기 때문.
-    // 때문에 빛의 세기는 최소 0도를 보장해야한다. 이렇게 음수로 빠지지 않게 0~1 사이의 값을 유지하게해주는 역할을 하는게 saturate다.
-    float fLightPow = saturate(dot(_in.vWorldNormal, -g_vLightDir));
+    // 때문에 빛의 세기는 최소 0도를 보장해야한다. 이렇게 음수로 빠지지 않게 0~1 사이의 값을 유지하게해주는 역할을 하는게 saturate다.  
+   // float fLightPow = saturate(dot(_in.vViewNormal, -g_vLightDir)); // 월드 기준이였을 때의 빛의 세기 구하는 방법
     
-     // 보간되어 들어온 빛의 세기값을 출력 색상과 곱해준다.
+    // view 스페이스에서의 노말벡터와 과우언의 방향을 내적하여 빛의 세기를 구함(램버트 코사인 법칙)
+    float fLightPow = saturate(dot(_in.vViewNormal, -vViewLightDir));
+    
+    // 월드 상에서의 반사광의 방향 벡터 구하는 공식
+    //float3 vWorldReflect = g_vLightDir + 2.f * (dot(-g_vLightDir, _in.vWorldNormal)) * _in.vWorldNormal;
+    
+    // 뷰스페이스상에서의 반사광의 방햑 벡터 구하는 공식 (뷰스페이스상의 노말을 가지고 구한다)
+    // 내적을 해서 구한 다음 그걸 2배로 키워서 뷰공간에서의 반사각을 구한다. 
+    // 이렇게 되면 
+    float3 vViewReflect = normalize(vViewLightDir + 2.f * (dot(-vViewLightDir, _in.vViewNormal)) * _in.vViewNormal);
+    
+    // 뷰스페이스상의 픽셀의 좌표는 곧 카메라가 물체를 향하는 방향벡터와도 같다. (뷰스페이스는 원점에 카메라가 있기 때문)
+    // 방향이기 때문에 normalize를 한다. 물체가 뷰스페이스의 카메라를 바라보는 방향과 원점에서 물체를 바라보는 방향이 같은지 아닌지로
+    // 반사광이 카메라 방향으로 튀었는지를 판별할 수 있다. (같다면 둘 중 한 녀석을 뒤집어서 내적을 하여 코싸인 셀타(각도(를 구한 뒤,
+    // 해당 각도에 따른 빛의 세기를 코싸인 그래프를 참고하여 알 수 있다.
+    float3 vEye = normalize(_in.vViewPos);
+    
+    // 뷰스페이스상의 빛의 세기를 구한다. 왜 역방향으로 내적을 하냐면, 그렇게 안하면 오히려 최대치 180도라는 각도가 나오게 되기 때문
+    // saturate를 안해주면 반사광이 과하게 붙어서 엄청 새까매짐
+    float fSpecPow = saturate(dot(vViewReflect, -vEye));
+    
+    // 코싸인그래프의 모양을 뒤집어 주기 위해 제곱함 (제곱하면 점점 값이 낮아짐)
+    fSpecPow = pow(fSpecPow, 20); // 20승을 해준다는 의미의 코드다. 
+      
+    
+     //=== 반사광이 없었을 때
+    //보간되어 들어온 빛의 세기값을 출력 색상과 곱해준다.
     // 환경광 또한 출력 색상와 어우러져야되기 때문에 곱해준다.
-    vOutColor.xyz = (vOutColor.xyz * fLightPow) + (vOutColor.xyz * g_vLightAmb);
+   // vOutColor.xyz = (vOutColor.xyz * fLightPow) + (vOutColor.xyz * g_vLightAmb);
+    
+    
+    // === 반사광이 있는 현재
+    // 반사광에는 빛의 세기에다가 물체의 색을 곱해주지 않음. 튕겨낸 빛이기 때문에 본래의 광원의 색을 가져가야되기 때문
+    // 빛 자체에도 색상이 있기 때문에 g_vLightcolor라는 걸 위에서 만들어줬었음.    
+    vOutColor.xyz = (vOutColor.xyz * g_vLightColor * fLightPow) // g_vLightColor를 왜 곱해야하냐면 물체가 빨간색이면 조명이 하얀색이어도 붉게 비춰져야하기 때문
+                    + (vOutColor.xyz * g_vLightColor * g_vLightAmb)
+                    + g_vLightColor * g_fLightSpecCoeff * fSpecPow;
+   
     
     return vOutColor;
 }

@@ -634,6 +634,10 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
 	// Parameter	
+	pShader->AddTexParam(TEX_0, "Output Textrue");
+	pShader->AddTexParam(TEX_1, "Normal Textrue");
+
+
 
 	AddRes(pShader->GetKey(), pShader);
 }
