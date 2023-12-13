@@ -21,7 +21,10 @@ struct VS_IN
     float3 vPos : POSITION;
     float2 vUV : TEXCOORD;
     
+    // 정점 안에 있는 벡터 정보를 갖고온다. 
     float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
 };
 
 struct VS_OUT
@@ -33,7 +36,10 @@ struct VS_OUT
     
     // 뷰 스페이스 기준으로 라이팅 연산을 위해 아래처럼 이름 지어줌
     float3 vViewPos : POSITION; 
+    
     float3 vViewNormal : NORMAL;
+    float3 vViewTangent : TANGENT;
+    float3 vViewBinormal : BINORMAL;
 };
 
 
@@ -52,13 +58,16 @@ VS_OUT VS_Std3D(VS_IN _in)
     때문에 아래 노말 값의 w값은 0으로 확대. 크기도 늘어난 상태일 수 있으므로 길이를 1로 만들어야하기 땜에 normalize해준다 */
     //output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWorld)).xyz;
     
-    // === 모든 연산을 뷰 스페이스를 기준으로 둔다. 즉, 카메라를 원점으로 보낸 상황. 또한 카메라가 보는 방향이 z축이 됨
-    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
-     
     
     // 입력으로 들어온 정점에다가 뷰스페이스를 곱하여, 뷰스페이스상의 정점의 위치를 구해낸다.
     // 좌표를 구하는거기 때문에 w값은 1로 둔다. 이 값이 픽셀쉐이더로 넘어가게 되면 보간된 뷰공간에서의 픽셀들의 좌표도 알아낼 수 있게 된다.
     output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV);
+    
+    // === 모든 연산을 뷰 스페이스를 기준으로 둔다. 즉, 카메라를 원점으로 보낸 상황. 또한 카메라가 보는 방향이 z축이 됨
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV)).xyz;
+    output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV)).xyz;
+    output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV)).xyz;
+     
     
     
     // 물체의 위치에는 이동 값도 적용되야하므로 w값을 1로 설정 
@@ -78,10 +87,41 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
 {
     float4 vOutColor = float4(0.5f, 0.5f, 0.5f, 1.f);
     
+    // 입력으로 들어온 뷰스페이스상의 노말을 받아둔다.
+    float3 vViewNormal = _in.vViewNormal;
     
     if(g_btex_0)
     {
         vOutColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+    }
+    
+    
+    // 텍스처에 노말 정보 넣어주는 용도
+    // 여기에 바인딩된 게 있다면 해당 텍스처에 꺼낸 노말을 vViewNormal로 쓸 것이다.
+    if (g_btex_1)
+    {
+        float3 vNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+        
+        // 0~1범위로 샘플링 되는 값을 탄젠트 스페이스 좌표계의 범위인 -1 ~ 1로 확장하기 위해 0~2로 확대한 후, 전체에 -1을 해준 것
+        // 이렇게 한 이유는 저장되어 있는 데이터가 '방향 데이터'이기 때문이다.
+        vNormal = vNormal * 2.f - 1.f;
+        
+        // 뷰스페이스 기준의 각 정보들을 갖고 와서 회전 행렬 만듦
+        // 왜 회전을 하냐면 우리쪽 표면으로 텍스처의 방향 정보를 가져오기 위해서다.
+        // 즉, 우리 쪽 물체의 원래 방향정보들을 미리 구해놓고 탄젠트스페이스의 좌표계의 각 축들에 어떤 회전 행렬을 곱하면
+        // 서로의 각 축이 일치하게 될 것이다. (x는 t, y는 N, z축은 b). 이렇게 만드는 어떤 회전행렬을 구해서 
+        // 추출하려는 탄젠트스페이스 축에 곱해주면 우리 표면에 회전한 상태로 가져다 놓을 수 있기 때문이다.  
+        // 근데 우리쪽 물체의 원래 방향정보들이 단위행렬의 형태라서 결국 그 어떤 회전 행렬은 t/n/b (1열 3행)이었던거다.
+        // 그래서 아래처럼 입력으로 들어온 값을 받아둔것  
+        float3x3 vRotateMat = 
+        {
+            _in.vViewTangent,
+            -_in.vViewBinormal, // 원래는 음수로 안뒤집어도 되는데 쌤 텍스처가 좌표계가 반대라서 -로 뒤집음(오픈지엘 좌표계써서)
+            _in.vViewNormal
+        };
+        
+        vViewNormal = mul(vNormal, vRotateMat);
+
     }
     
     
@@ -105,7 +145,7 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
    // float fLightPow = saturate(dot(_in.vViewNormal, -g_vLightDir)); // 월드 기준이였을 때의 빛의 세기 구하는 방법
     
     // view 스페이스에서의 노말벡터와 과우언의 방향을 내적하여 빛의 세기를 구함(램버트 코사인 법칙)
-    float fLightPow = saturate(dot(_in.vViewNormal, -vViewLightDir));
+    float fLightPow = saturate(dot(vViewNormal, -vViewLightDir));
     
     // 월드 상에서의 반사광의 방향 벡터 구하는 공식
     //float3 vWorldReflect = g_vLightDir + 2.f * (dot(-g_vLightDir, _in.vWorldNormal)) * _in.vWorldNormal;
@@ -113,7 +153,7 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
     // 뷰스페이스상에서의 반사광의 방햑 벡터 구하는 공식 (뷰스페이스상의 노말을 가지고 구한다)
     // 내적을 해서 구한 다음 그걸 2배로 키워서 뷰공간에서의 반사각을 구한다. 
     // 이렇게 되면 
-    float3 vViewReflect = normalize(vViewLightDir + 2.f * (dot(-vViewLightDir, _in.vViewNormal)) * _in.vViewNormal);
+    float3 vViewReflect = normalize(vViewLightDir + 2.f * (dot(-vViewLightDir, vViewNormal)) * vViewNormal);
     
     // 뷰스페이스상의 픽셀의 좌표는 곧 카메라가 물체를 향하는 방향벡터와도 같다. (뷰스페이스는 원점에 카메라가 있기 때문)
     // 방향이기 때문에 normalize를 한다. 물체가 뷰스페이스의 카메라를 바라보는 방향과 원점에서 물체를 바라보는 방향이 같은지 아닌지로

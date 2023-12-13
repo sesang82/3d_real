@@ -38,6 +38,11 @@ void CResMgr::CreateDefaultMesh()
 	v.vPos = Vec3(-0.5f, 0.5f, 0.f);
 	v.vColor = Vec4(1.f, 0.f, 0.f, 1.f);
 	v.vUV = Vec2(0.f, 0.f);
+	v.vNormal = Vec3(0.f, 0.f, -1.f);
+	v.vTangent = Vec3(1.f, 0.f, 0.f); // 노말의 우측으로 가야하므로 x는 1
+	v.vBinormal = Vec3(0.f, -1.f, 0.f);
+
+
 	vecVtx.push_back(v);
 
 	v.vPos = Vec3(0.5f, 0.5f, 0.f);
@@ -99,6 +104,12 @@ void CResMgr::CreateDefaultMesh()
 	v.vPos = Vec3(0.f, 0.f, 0.f);
 	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
 	v.vUV = Vec2(0.5f, 0.5f);
+
+	// 방향 벡터 지정함
+	v.vNormal = Vec3(0.f, 0.f, -1.f);
+	v.vTangent = Vec3(1.f, 0.f, 0.f); // 노말의 우측으로 가야하므로 x는 1
+	v.vBinormal = Vec3(0.f, -1.f, 0.f);
+
 	vecVtx.push_back(v);
 
 	// 정점 위치 지정
