@@ -128,10 +128,10 @@
       <Filter>Source\06. Component\RenderComponent\3. TileMap</Filter>
     </ClInclude>
     <ClInclude Include="CAnimator2D.h">
-      <Filter>Source\06. Component\5. Animator2D</Filter>
+      <Filter>Source\06. Component\6. Animator2D</Filter>
     </ClInclude>
     <ClInclude Include="CAnim2D.h">
-      <Filter>Source\06. Component\5. Animator2D</Filter>
+      <Filter>Source\06. Component\6. Animator2D</Filter>
     </ClInclude>
     <ClInclude Include="CComputeShader.h">
       <Filter>Source\07. Resource\4. Shader\ComputeShader</Filter>
@@ -150,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="CFontMgr.h">
       <Filter>Source\03. Manager\10. FontMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CLight3D.h">
+      <Filter>Source\06. Component\5. Light3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -262,10 +265,10 @@
       <Filter>Source\06. Component\RenderComponent\3. TileMap</Filter>
     </ClCompile>
     <ClCompile Include="CAnimator2D.cpp">
-      <Filter>Source\06. Component\5. Animator2D</Filter>
+      <Filter>Source\06. Component\6. Animator2D</Filter>
     </ClCompile>
     <ClCompile Include="CAnim2D.cpp">
-      <Filter>Source\06. Component\5. Animator2D</Filter>
+      <Filter>Source\06. Component\6. Animator2D</Filter>
     </ClCompile>
     <ClCompile Include="CComputeShader.cpp">
       <Filter>Source\07. Resource\4. Shader\ComputeShader</Filter>
@@ -287,6 +290,9 @@
     </ClCompile>
     <ClCompile Include="CResMgr_Init.cpp">
       <Filter>Source\03. Manager\05. ResMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CLight3D.cpp">
+      <Filter>Source\06. Component\5. Light3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -413,9 +419,6 @@
     <Filter Include="Source\02. Device\StructuredBuffer">
       <UniqueIdentifier>{4133d464-b1f7-4ff4-b41c-071f2f05dc08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\06. Component\5. Animator2D">
-      <UniqueIdentifier>{7d787944-7b75-432b-91a9-8452604ba075}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\08. ShaderCode\Compute">
       <UniqueIdentifier>{e7e58685-e989-40bc-92c9-4f79bf523b39}</UniqueIdentifier>
     </Filter>
@@ -430,6 +433,12 @@
     </Filter>
     <Filter Include="Source\03. Manager\10. FontMgr">
       <UniqueIdentifier>{b1a42f85-f96c-490d-a570-365243b1a620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\6. Animator2D">
+      <UniqueIdentifier>{7d787944-7b75-432b-91a9-8452604ba075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\06. Component\5. Light3D">
+      <UniqueIdentifier>{87f92431-1db6-4b17-a307-9753cc7fb99f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

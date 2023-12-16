@@ -1,6 +1,7 @@
 #pragma once
 
 
+// 상수버퍼에 보낼 용도로 쓴 구조체들은 16바이트 단위로 맞춰져있음.
 
 struct tVertex
 {
@@ -48,14 +49,18 @@ struct tLightColor
 	Vec4 vAmbient;	// 주변 광(환경 광)
 };
 
+
+
 // LightInfo
 struct tLightInfo
 {
 	tLightColor Color;		 // 빛의 색상
 
+	// ==== 아래 두 개는 transform 내부에서 알아서 계산되는거라 관련 인터페이스 함수를 조명3d 클래스엔 안만들어둠
 	Vec4		vWorldPos;   // 광원의 월드 스페이스 위치
 	Vec4		vWorldDir;	 // 빛을 보내는 방향
 
+	// ==== 외부 인터페이스 함수 만들어둠
 	UINT		LightType;   // 빛의 타입(방향성, 점, 스포트)
 	float		Radius;		 // 빛의 반경(사거리)
 	float		Angle;		 // 빛의 각도

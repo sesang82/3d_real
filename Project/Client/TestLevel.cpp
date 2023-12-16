@@ -82,17 +82,18 @@ void CreateTestLevel()
 
 	// 광원 추가
 	CGameObject* pLightObj = new CGameObject;
-	pLightObj->SetName(L"Point Light");
+	pLightObj->SetName(L"Directional Light");
 
 	pLightObj->AddComponent(new CTransform);
-	pLightObj->AddComponent(new CLight2D);
-
-	pLightObj->Transform()->SetRelativePos(Vec3(0.f, 0.f, 0.f));
-	pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
-
-	pLightObj->Light2D()->SetLightType(LIGHT_TYPE::POINT);
-	pLightObj->Light2D()->SetLightDiffuse(Vec3(1.f, 1.f, 1.f));
-	pLightObj->Light2D()->SetRadius(500.f);
+	pLightObj->AddComponent(new CLight3D);
+	//pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
+	
+	// pi/4.f는 45도임 
+	pLightObj->Transform()->SetRelativePos(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
+	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	
+	//pLightObj->Light2D()->SetRadius(500.f);
 
 	SpawnGameObject(pLightObj, Vec3(0.f, 0.f, 0.f), 0);
 
