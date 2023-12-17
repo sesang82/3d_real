@@ -19,6 +19,7 @@ CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
 	, m_fAspectRatio(1.f)
 	, m_fScale(1.f)
+	, m_Far(10000.f)
 	, m_ProjType(PROJ_TYPE::ORTHOGRAPHIC)
 	, m_iLayerMask(0)
 	, m_iCamIdx(-1)
@@ -99,7 +100,7 @@ void CCamera::CalcProjMat()
 	else
 	{	
 		// 원근 투영
-		m_matProj = XMMatrixPerspectiveFovLH(XM_PI / 2.f, m_fAspectRatio, 1.f, 10000.f);
+		m_matProj = XMMatrixPerspectiveFovLH(XM_PI / 2.f, m_fAspectRatio, 1.f, m_Far);
 	}
 
 }

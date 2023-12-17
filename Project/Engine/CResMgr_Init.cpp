@@ -638,7 +638,7 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 	// ============================
 	// SkyBoxShader
-	// RS_TYPE : CULL_BACK
+	// RS_TYPE : CULL_FRONT
 	// DS_TYPE : LESS
 	// BS_TYPE : DEFAULT
 	// Domain : MASK
@@ -649,8 +649,8 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->CreateVertexShader(L"shader\\skybox.fx", "VS_SkyBoxShader");
 	pShader->CreatePixelShader(L"shader\\skybox.fx", "PS_SkyBoxShader");
 
-	pShader->SetRSType(RS_TYPE::CULL_BACK);
-	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	pShader->SetDSType(DS_TYPE::LESS_EQUAL);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
 	// Parameter	

@@ -22,7 +22,24 @@ VS_SKY_OUT VS_SkyBoxShader(VS_SKY_IN _in)
 {
     VS_SKY_OUT output = (VS_SKY_OUT) 0.f;
     
-    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+    
+    // 원점으로 들어온 구를 이루는 정점들은 뷰스페이스로 이동된걸로 가정하고 쉐이더를 작성할 것이다. (_in.vPos)
+    // 먼저 우리는 뷰행렬을 곱해줄 것이다. 안곱해주면 다음과 같은 일이 일어난다.
+    // 뷰스페이스상의 카메라가 원점에 있을 때, z축은 수직인 방향인데 그 z축이 바라보고 있는 면이 바로 구의 한 부분이기 때문이라
+    // 카메라가 아무리 회전을 해도 그 부분만 보이게 된다.
+    // 카메라의 회전에 따라 모든 면이 다 보일 수 있도록 하기 위해서라도 뷰행렬을 곱하는 것이다. 
+    // 단 뷰행렬을 곱할 때, 우리는 '회전'만 적용되길 원하는 것이므로 w값은 이동에 영향을 받지 않도록 0으로 반드시 줘야한다.
+    float4 vViewPos = mul(float4(_in.vPos, 0.f), g_matView); 
+    float4 vProjPos = mul(vViewPos, g_matProj);
+    
+    // z자리에 w를 넣어버리면 Pz.Vz였던 것이 Vz가 되어버린다. 이 상태로 레스터라이저에게 넘겨주면
+    // w를 갖다 나눠쓸 때 z자리가 1이 되버리다보니 마치 스카이박스가 far위치에 있는 것처럼 멀리 거리를 두게 할 수 있는 것이다.
+    // x, y 좌표는 ndc좌표계에 그대로 압축해서 해당 위치에 보이게는 하고 z값만 최대값을 줘서 
+    // 계속 멀리서 보고 있는 것과 같은 눈속임을 줄 수 있는 것이다. 
+    vProjPos.z = vProjPos.w;
+    
+    
+    output.vPosition = vProjPos;
     output.vUV = _in.vUV;
     
     return output;

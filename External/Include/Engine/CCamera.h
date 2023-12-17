@@ -7,6 +7,7 @@ class CCamera :
 private:
     float       m_fAspectRatio;
     float       m_fScale;           // Orthograpic 에서 사용하는 카메라 배율
+    float       m_Far;              // 카메라가 볼 수 있는 최대 거리.
 
     PROJ_TYPE   m_ProjType;
 
@@ -32,6 +33,9 @@ public:
 
     void SetScale(float _fScale) { m_fScale = _fScale; }
     float GetScale() { return m_fScale; }
+
+    void SetFar(float _Far) { m_Far = _Far; }
+    float GetFar() { return m_Far; }
 
     void SetLayerMask(int _iLayer, bool _Visible);
     void SetLayerMaskAll(bool _Visible);
