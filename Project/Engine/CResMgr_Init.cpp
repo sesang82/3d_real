@@ -633,6 +633,33 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->AddTexParam(TEX_1, "Normal Texture");
 
 	AddRes(pShader->GetKey(), pShader);
+
+
+
+	// ============================
+	// SkyBoxShader
+	// RS_TYPE : CULL_BACK
+	// DS_TYPE : LESS
+	// BS_TYPE : DEFAULT
+	// Domain : MASK
+	// ============================
+	pShader = new CGraphicsShader;
+	pShader->SetKey(L"SkyBoxShader");
+
+	pShader->CreateVertexShader(L"shader\\skybox.fx", "VS_SkyBoxShader");
+	pShader->CreatePixelShader(L"shader\\skybox.fx", "PS_SkyBoxShader");
+
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
+
+	// Parameter	
+	pShader->AddScalarParam(INT_0, "SkyBox Type");
+
+	pShader->AddTexParam(TEX_0, "Output Texture");
+
+
+	AddRes(pShader->GetKey(), pShader);
 }
 
 void CResMgr::CreateDefaultComputeShader()
@@ -715,5 +742,13 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3DShader"));
 	AddRes(L"Std3DMtrl", pMtrl);
+
+	// SkyBoxMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"SkyBoxShader"));
+	AddRes(L"SkyBoxMtrl", pMtrl);
+
+
+
 
 }

@@ -19,6 +19,7 @@
 #include <Engine/CSetColorShader.h>
 
 
+
 void CreateTestLevel()
 {
 	//return;
@@ -80,23 +81,20 @@ void CreateTestLevel()
 	SpawnGameObject(pUICam, Vec3(0.f, 0.f, 0.f), 0);
 
 
-	//// 광원 추가
-	//CGameObject* pLightObj = new CGameObject;
-	//pLightObj->SetName(L"Directional Light");
+	// 광원 추가
+	CGameObject* pLightObj = new CGameObject;
+	pLightObj->SetName(L"Directional Light");
 
-	//pLightObj->AddComponent(new CTransform);
-	//pLightObj->AddComponent(new CLight3D);
-	////pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
-	//
-	//// pi/4.f는 45도임 
-	//pLightObj->Transform()->SetRelativePos(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
-	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
-	//
-	////pLightObj->Light2D()->SetRadius(500.f);
+	pLightObj->AddComponent(new CTransform);
+	pLightObj->AddComponent(new CLight3D);
+	pLightObj->Transform()->SetRelativeRot(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f)); 	// pi/4.f는 45도임 
+	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	pLightObj->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	
+	//pLightObj->Light2D()->SetRadius(500.f);
 
-	//SpawnGameObject(pLightObj, Vec3(0.f, 0.f, 0.f), 0);
+	SpawnGameObject(pLightObj, Vec3(0.f, 0.f, 0.f), 0);
 
 
 	//// 광원 추가
@@ -117,41 +115,44 @@ void CreateTestLevel()
 	//SpawnGameObject(pLightObj, Vec3(0.f, -250.f, 0.f), 0);
 
 
-		// 광원 추가
-	CGameObject* pLightObj = new CGameObject;
-	pLightObj->SetName(L"Point Light 1");
+	//	// 광원 추가
+	//CGameObject* pLightObj = new CGameObject;
+	//pLightObj->SetName(L"Point Light 1");
 
-	pLightObj->AddComponent(new CTransform);
-	pLightObj->AddComponent(new CLight3D);
+	//pLightObj->AddComponent(new CTransform);
+	//pLightObj->AddComponent(new CLight3D);
 
-	//pLightObj->Transform()->SetRelativeRot(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
-	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));	
-	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 0.2f, 0.2f));
+	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	//pLightObj->Light3D()->SetRadius(1000.f);
 
-	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 0.2f, 0.2f));
-	pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
-	pLightObj->Light3D()->SetRadius(1000.f);
-
-	SpawnGameObject(pLightObj, Vec3(-500.f, -250.f, 0.f), 0);
+	//SpawnGameObject(pLightObj, Vec3(-500.f, -250.f, 0.f), 0);
 
 
-	pLightObj = new CGameObject;
-	pLightObj->SetName(L"Point Light 2");
+	//pLightObj = new CGameObject;
+	//pLightObj->SetName(L"Point Light 2");
 
-	pLightObj->AddComponent(new CTransform);
-	pLightObj->AddComponent(new CLight3D);
+	//pLightObj->AddComponent(new CTransform);
+	//pLightObj->AddComponent(new CLight3D);
 
-	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pLightObj->Light3D()->SetLightColor(Vec3(0.2f, 0.2f, 1.f));
-	pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
-	pLightObj->Light3D()->SetRadius(1000.f);
+	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pLightObj->Light3D()->SetLightColor(Vec3(0.2f, 0.2f, 1.f));
+	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	//pLightObj->Light3D()->SetRadius(1000.f);
 
-	SpawnGameObject(pLightObj, Vec3(500.f, -250.f, 0.f), 0);
+	//SpawnGameObject(pLightObj, Vec3(500.f, -250.f, 0.f), 0);
 
 
+	// ===== SkyBox 추가
+	CGameObject* pSkyBox = new CGameObject;
+	pSkyBox->SetName(L"SkyBox");
+	pSkyBox->AddComponent(new CTransform);
+	pSkyBox->AddComponent(new CSkyBox);
 
+	pSkyBox->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
+
+	SpawnGameObject(pSkyBox, Vec3(0.f, 0.f, 0.f), 0);
 
 	// 오브젝트 생성
 	CGameObject* pParent = new CGameObject;

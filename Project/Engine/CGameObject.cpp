@@ -9,6 +9,7 @@
 #include "CLevelMgr.h"
 #include "CLevel.h"
 #include "CLayer.h"
+#include "CRenderComponent.h"
 
 
 CGameObject::CGameObject()
@@ -156,13 +157,25 @@ void CGameObject::AddComponent(CComponent* _Component)
 
 		m_arrCom[(UINT)_Component->GetType()] = _Component;
 
-		// RenderComponent 확인
-		if (COMPONENT_TYPE::MESHRENDER <= _Component->GetType()
+		// == RenderComponent 확인
+		// addcomponent할 때 부모타입인 ccomponent타입으로 받아왔는데 다운캐스팅한 아래 코드까지 들어온다는 것은
+		// 렌더 컴포넌트와 관련 있는 녀석일 것이다. 다운캐스팅을 실패하면 nullptr을 반환하게 된다.
+		CRenderComponent* pRenderCom = dynamic_cast<CRenderComponent*>(_Component);
+
+		// 이를 위해 렌더컴포넌트가 없는 부분까지 방어 처리 해준다. 
+		if (pRenderCom)
+		{
+			assert(!m_RenderCom);
+			m_RenderCom = pRenderCom;
+		}
+
+
+		/*if (COMPONENT_TYPE::MESHRENDER <= _Component->GetType()
 			&& _Component->GetType() <= COMPONENT_TYPE::DECAL)
 		{
 			assert(!m_RenderCom);
 			m_RenderCom = (CRenderComponent*)_Component;
-		}
+		}*/
 	}
 }
 

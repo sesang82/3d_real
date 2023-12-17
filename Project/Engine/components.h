@@ -11,6 +11,7 @@
 #include "CMeshRender.h"
 #include "CTileMap.h"
 #include "CParticleSystem.h"
+#include "CSkyBox.h"
 
 //#include "CCollider3D.h"
 //#include "CAnimator3D.h"

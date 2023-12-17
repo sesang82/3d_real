@@ -83,4 +83,7 @@ SamplerState g_sam_0 : register(s0);
 SamplerState g_sam_1 : register(s1);
 
 
+#define PI 3.1415926535f
+
+
 #endif

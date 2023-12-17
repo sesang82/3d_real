@@ -155,6 +155,9 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
         float fDist = distance(_vViewPos, vLightViewPos); // 두 점 사이에 거리값을 구함        
         
         
+        
+      
+        
         // range의 최대치에 가까워질수록 빛의 세기가 옅어지는 효과를 주기 위해 거리에 따른 비율을 구해준다.    
        
         // Q. 1로 뺴준 이유?
@@ -163,8 +166,12 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
         // 0.2가 나온다. 그런데 dist에 가까울수록 오히려 빛의 세기가 쎄야할 것이다. 때문에 1에서 빼줘서
         // 0.8로 만들어서 80퍼의 빛을 가져갈 수 있도록 바꿔준거다.
         // 또한 음수로 빠지는 걸 방지하기 위해서라도 saturate를 해준다.
-        fDistPow = saturate(1.f - (fDist / LightInfo.Radius));
-               
+            //fDistPow = saturate(1.f - (fDist / LightInfo.Radius)); // 코싸인그래프를 이용한 빛의 세기 감쇄법
+     
+       // 삼각함수 형태로 빛의 세기를 감쇄
+        fDistPow = saturate(cos((fDist / LightInfo.Radius) * (PI / 2.f)));
+            
+
         
          // viewSpace에서의 노말벡터와 광원의 방향을 내적 (램버트 코사인 법칙)
         fLightPow = saturate(dot(_vViewNormal, -vViewLightDir)) * fDistPow;
@@ -182,6 +189,42 @@ void CalcLight3D(float3 _vViewPos, float3 _vViewNormal, int _LightIdx, inout tLi
     else
     {
         // LightDir 과 Angle 값을 활용해서 SpotLight 구현해보기
+        
+        
+        // === 일단 포인트라이트꺼 갖다 씀 
+        
+         // 거리에 따른 빛의 세기
+        // 빛의 세기가 거리에 따라 감쇄되는 효과를 주기 위해 만듦.
+        // 이걸 하지 않으면 point light의 지정한 반경 밖으로도 빛이 나가게 됨 
+        float fDistPow = 1.f;
+        
+        // == ViewSpace에서의 광원의 위치
+        // 위치는 이동값의 영향을 받아야하니 1로 확장 
+        float3 vLightViewPos = mul(float4(LightInfo.vWorldPos.xyz, 1.f), g_matView).xyz;
+        
+        // 광원에서 호출되는 픽셀로 가는 빛의 방향 구하기(방향이므로 normalize해서 길이를 1로 만들어둠)
+        vViewLightDir = normalize(_vViewPos - vLightViewPos);
+        
+        
+        // point light로부터 픽셀 간의 거리 체크 
+        float fDist = distance(_vViewPos, vLightViewPos); // 두 점 사이에 거리값을 구함        
+        
+        // 삼각함수 형태로 빛의 세기를 감쇄
+        fDistPow = saturate(cos((fDist / LightInfo.Radius) * (PI / 2.f)));
+            
+
+        
+         // viewSpace에서의 노말벡터와 광원의 방향을 내적 (램버트 코사인 법칙)
+        fLightPow = saturate(dot(_vViewNormal, -vViewLightDir)) * fDistPow;
+        
+        // 반사광
+        float3 vViewReflect = normalize(vViewLightDir + 2.f * (dot(-vViewLightDir, _vViewNormal)) * _vViewNormal);
+        float3 vEye = normalize(_vViewPos);
+        
+        // 반사광의 세기 구하기
+        fSpecPow = saturate(dot(vViewReflect, -vEye));
+        fSpecPow = pow(fSpecPow, 20) * fDistPow; // 20승을 해준다는 의미의 코드다. 
+        
     }
   
     

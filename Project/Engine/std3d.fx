@@ -133,7 +133,7 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
             _in.vViewTangent,
             -_in.vViewBinormal, // 원래는 음수로 안뒤집어도 되는데 쌤 텍스처가 좌표계가 반대라서 -로 뒤집음(오픈지엘 좌표계써서)
             _in.vViewNormal        
-        };
+        }; // 사용하는 노말 텍스처가 오픈지엘 좌표계를 쓴다면 바이노말에 -를 붙이고, 왼손좌표계dx좌표계를 쓴다면 +를 쓰도록 하는거 만들기
         
         vViewNormal = mul(vNormal, vRotateMat);        
     }
