@@ -5,7 +5,6 @@
 #include "CSetColorShader.h"
 #include "CParticleUpdateShader.h"
 
-
 void CResMgr::CreateDefaultMesh()
 {
 	vector<Vtx> vecVtx;
@@ -38,10 +37,10 @@ void CResMgr::CreateDefaultMesh()
 	v.vPos = Vec3(-0.5f, 0.5f, 0.f);
 	v.vColor = Vec4(1.f, 0.f, 0.f, 1.f);
 	v.vUV = Vec2(0.f, 0.f);
-	v.vNormal = Vec3(0.f, 0.f, -1.f);
-	v.vTangent = Vec3(1.f, 0.f, 0.f); // 노말의 우측으로 가야하므로 x는 1
-	v.vBinormal = Vec3(0.f, -1.f, 0.f);
 
+	v.vNormal = Vec3(0.f, 0.f, -1.f);
+	v.vTangent = Vec3(1.f, 0.f, 0.f);
+	v.vBinormal = Vec3(0.f, -1.f, 0.f);
 
 	vecVtx.push_back(v);
 
@@ -105,9 +104,8 @@ void CResMgr::CreateDefaultMesh()
 	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
 	v.vUV = Vec2(0.5f, 0.5f);
 
-	// 방향 벡터 지정함
 	v.vNormal = Vec3(0.f, 0.f, -1.f);
-	v.vTangent = Vec3(1.f, 0.f, 0.f); // 노말의 우측으로 가야하므로 x는 1
+	v.vTangent = Vec3(1.f, 0.f, 0.f);
 	v.vBinormal = Vec3(0.f, -1.f, 0.f);
 
 	vecVtx.push_back(v);
@@ -301,17 +299,9 @@ void CResMgr::CreateDefaultMesh()
 	AddRes<CMesh>(L"CubeMesh", pMesh);
 	vecIdx.clear();
 
-
-
-
-
 	// ===========
 	// Sphere Mesh
 	// ===========
-
-	// 노말, 탄젠트, 바이노말 부분 중요
-
-	// 로컬 상에서의 반지름을 0.5로 설정해둠 
 	fRadius = 0.5f;
 
 	// Top
@@ -325,7 +315,6 @@ void CResMgr::CreateDefaultMesh()
 	vecVtx.push_back(v);
 
 	// Body
-	// 곡면을 더 주고싶으면 아래 수치를 20씩 올리면 됨. 근데 40이여도 충분
 	UINT iStackCount = 40; // 가로 분할 개수
 	UINT iSliceCount = 40; // 세로 분할 개수
 
@@ -350,8 +339,6 @@ void CResMgr::CreateDefaultMesh()
 			v.vUV = Vec2(fUVXStep * j, fUVYStep * i);
 			v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
 			v.vNormal = v.vPos;
-
-			// 반지름의 길이가 꼭 1이라는 법이 없기 때문에 길이를 1로 정규화시킴 
 			v.vNormal.Normalize();
 
 			v.vTangent.x = -fRadius * sinf(phi) * sinf(theta);
@@ -421,11 +408,6 @@ void CResMgr::CreateDefaultMesh()
 	AddRes<CMesh>(L"SphereMesh", pMesh);
 	vecVtx.clear();
 	vecIdx.clear();
-
-
-
-
-
 }
 
 void CResMgr::CreateDefaultGraphicsShader()
@@ -645,14 +627,13 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
 	// Parameter	
-	pShader->AddTexParam(TEX_0, "Output Textrue");
-	pShader->AddTexParam(TEX_1, "Normal Textrue");
+	pShader->AddScalarParam(FLOAT_0, "Spec Coeff");
 
-
+	pShader->AddTexParam(TEX_0, "Output Texture");
+	pShader->AddTexParam(TEX_1, "Normal Texture");
 
 	AddRes(pShader->GetKey(), pShader);
 }
-
 
 void CResMgr::CreateDefaultComputeShader()
 {

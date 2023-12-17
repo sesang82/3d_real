@@ -120,7 +120,8 @@ int MaterialUI::render_update()
             // 현재 머티리얼에 세팅된 값을 전달   
             float data = 0;
             pMtrl->GetScalarParam(vecScalarParam[i].eParam, &data);
-            if (ParamUI::Param_Float(vecScalarParam[i].strDesc, &data))
+
+            if (ParamUI::Param_Float(vecScalarParam[i].strDesc, &data, true))
             {
                 // UI 쪽에서 값이 변경되었으면, 실제 머티리얼 에도 적용
                 pMtrl->SetScalarParam(vecScalarParam[i].eParam, &data);

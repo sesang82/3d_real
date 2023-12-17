@@ -9,8 +9,6 @@ class CMeshRender;
 #define GET_OTHER_COMPONENT(Type) C##Type* Type() {return m_pOwner->Type();}
 
 
-
-
 class CComponent :
     public CEntity
 {
@@ -32,13 +30,12 @@ public:
     virtual void SaveToLevelFile(FILE* _File) = 0;
     virtual void LoadFromLevelFile(FILE* _FILE) = 0;
 
-public:
+public:  
     GET_OTHER_COMPONENT(Transform);
     GET_OTHER_COMPONENT(MeshRender);
     GET_OTHER_COMPONENT(Camera);
     GET_OTHER_COMPONENT(Collider2D);
     GET_OTHER_COMPONENT(Light2D);
-    GET_OTHER_COMPONENT(Light3D);
     GET_OTHER_COMPONENT(TileMap);
     GET_OTHER_COMPONENT(Animator2D);
 

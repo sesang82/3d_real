@@ -48,7 +48,15 @@ int ParamUI::Param_Float(const string& _strDesc, float* _pData, bool _bDrag)
 
     if (_bDrag)
     {
-        if (ImGui::DragFloat(strIntName.c_str(), _pData))
+        float v_speed = 0.01f; // 값이 변경되는 속도
+
+        // 조정할 수 있는 최소~ 최대값
+        float v_min = 0.0f;
+        float v_max = 1.0f; 
+
+
+
+        if (ImGui::DragFloat(strIntName.c_str(), _pData, v_speed, v_min, v_max))
         {
             return 1;
         }

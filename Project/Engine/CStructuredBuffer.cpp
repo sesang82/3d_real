@@ -16,8 +16,6 @@ CStructuredBuffer::~CStructuredBuffer()
 void CStructuredBuffer::Create(UINT _iElementSize, UINT _iElementCount
 	, SB_TYPE _Type, bool _bSysAccess, void* _pSysMem)
 {
-
-	// 스마트 포인터 쓰고 있기 때문에 nullptr로 밀어주기만 해도 자동으로 메모리해제 됨 
 	m_SB = nullptr;
 	m_SRV = nullptr;
 	m_UAV = nullptr;

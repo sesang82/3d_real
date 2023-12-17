@@ -42,7 +42,6 @@ void CResMgr::tick()
 {
 	m_Changed = false;
 }
-	
 
 Ptr<CTexture> CResMgr::CreateTexture(const wstring& _strKey, UINT _Width, UINT _Height
 	, DXGI_FORMAT _pixelformat, UINT _BindFlag, D3D11_USAGE _Usage)

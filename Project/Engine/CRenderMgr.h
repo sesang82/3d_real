@@ -17,14 +17,15 @@ private:
     CCamera*                    m_pEditorCam;       // 외부 에디터쪽에서 관리하는 카메라를 등록 받아둠
 
     vector<tDebugShapeInfo>     m_vecShapeInfo;
-    
+
     // 레벨에 추가된 광원이 모이는 공간
     vector<tLightInfo>          m_vecLight2D;
     vector<tLightInfo>          m_vecLight3D;
 
-
     CStructuredBuffer*          m_Light2DBuffer;
     CStructuredBuffer*          m_Light3DBuffer;
+
+
 
     void (CRenderMgr::* RENDER_FUNC)(void);
 
@@ -39,13 +40,8 @@ public:
     int RegisterCamera(CCamera* _Cam, int _idx);
     void RegisterEditorCamera(CCamera* _Cam) { m_pEditorCam = _Cam; }
     void SetRenderFunc(bool _IsPlay);
-
     void RegisterLight2D(const tLightInfo& _Light2D) { m_vecLight2D.push_back(_Light2D); }
-    void RegisterLight3D(const tLightInfo& _Light3D) { m_vecLight2D.push_back(_Light3D); }
-
-
-
-
+    void RegisterLight3D(const tLightInfo& _Light3D) { m_vecLight3D.push_back(_Light3D); }
     void ClearCamera() { m_vecCam.clear(); }
 
     void AddDebugShapeInfo(const tDebugShapeInfo& _info) { m_vecShapeInfo.push_back(_info); }

@@ -9,11 +9,11 @@ class CParticleSystem;
 class CCollider2D;
 class CAnimator2D;
 class CLight2D;
+class CLight3D;
 class CCamera;
 class CRenderComponent;
 class CTileMap;
 class CScript;
-class CLight3D;
 
 #define GET_COMPONENT(Type, TYPE) C##Type* Type() const { return (C##Type*)m_arrCom[(UINT)COMPONENT_TYPE::TYPE]; }
 
@@ -23,6 +23,8 @@ class CGameObject :
     public CEntity
 {
 private:
+    // 레벨이 시작될 때 호출 or 시작 된 레벨에 합류할 때 호출
+// 생성자
     CComponent*             m_arrCom[(UINT)COMPONENT_TYPE::END];
     CRenderComponent*       m_RenderCom;
     vector<CScript*>        m_vecScript;
@@ -62,7 +64,7 @@ public:
     GET_COMPONENT(Light2D, LIGHT2D);
     GET_COMPONENT(TileMap, TILEMAP);
     GET_COMPONENT(Animator2D, ANIMATOR2D);
-    GET_COMPONENT(Light3D, LIGHT3D);
+    GET_COMPONENT(Light3D, LIGHT3D);  
 
     CRenderComponent* GetRenderComponent() const {  return m_RenderCom; }
 

@@ -42,7 +42,6 @@ void CRenderMgr::init()
     m_Light2DBuffer = new CStructuredBuffer;
     m_Light2DBuffer->Create(sizeof(tLightInfo), 10, SB_TYPE::READ_ONLY, true);
 
-    
     // Light3DBuffer 구조화 버퍼 생성.
     // 컴퓨트 쉐이더처럼 cpu로 데이터 가져다가 수정하는 용도가 아니기 때문에 read only로 잡아둠 
     m_Light3DBuffer = new CStructuredBuffer;
@@ -127,7 +126,6 @@ void CRenderMgr::CopyRenderTarget()
 
 void CRenderMgr::UpdateData()
 {
-
     // ===== 2D
     // init에서 생성한 구조화버퍼 크기보다, 레벨에 추가된 조명 갯수가 더 많다면 더 크게 새로 만든다.
     if (m_Light2DBuffer->GetElementCount() < m_vecLight2D.size())
@@ -137,19 +135,18 @@ void CRenderMgr::UpdateData()
 
     // 구조화버퍼로 광원 데이터를 옮긴다.
     m_Light2DBuffer->SetData(m_vecLight2D.data(), sizeof(tLightInfo) * m_vecLight2D.size());
-    m_Light2DBuffer->UpdateData(12, PIPELINE_STAGE::PS_PIXEL); // 12번 레지스터에 바인딩한다. 
-
+    m_Light2DBuffer->UpdateData(12, PIPELINE_STAGE::PS_PIXEL);
 
 
     // ===== 3D
-    if (m_Light3DBuffer->GetElementCount() < m_vecLight3D.size())
+    if (m_Light3DBuffer->GetElementCount() < m_vecLight2D.size())
     {
-        m_Light3DBuffer->Create(sizeof(tLightInfo), m_vecLight3D.size(), SB_TYPE::READ_ONLY, true);
+        m_Light3DBuffer->Create(sizeof(tLightInfo), m_vecLight2D.size(), SB_TYPE::READ_ONLY, true);
     }
 
     // 구조화버퍼로 광원 데이터를 옮긴다.
     m_Light3DBuffer->SetData(m_vecLight3D.data(), sizeof(tLightInfo) * m_vecLight3D.size());
-    m_Light3DBuffer->UpdateData(13, PIPELINE_STAGE::PS_PIXEL); // 12번 레지스터에 바인딩한다. 
+    m_Light3DBuffer->UpdateData(13, PIPELINE_STAGE::PS_PIXEL);
 
 
 

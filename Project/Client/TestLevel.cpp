@@ -80,22 +80,77 @@ void CreateTestLevel()
 	SpawnGameObject(pUICam, Vec3(0.f, 0.f, 0.f), 0);
 
 
-	// 광원 추가
+	//// 광원 추가
+	//CGameObject* pLightObj = new CGameObject;
+	//pLightObj->SetName(L"Directional Light");
+
+	//pLightObj->AddComponent(new CTransform);
+	//pLightObj->AddComponent(new CLight3D);
+	////pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
+	//
+	//// pi/4.f는 45도임 
+	//pLightObj->Transform()->SetRelativePos(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
+	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	//
+	////pLightObj->Light2D()->SetRadius(500.f);
+
+	//SpawnGameObject(pLightObj, Vec3(0.f, 0.f, 0.f), 0);
+
+
+	//// 광원 추가
+	//CGameObject* pLightObj = new CGameObject;
+	//pLightObj->SetName(L"Point Light");
+
+	//pLightObj->AddComponent(new CTransform);
+	//pLightObj->AddComponent(new CLight3D);
+	////pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
+
+	//// pi/4.f는 45도임 
+	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
+	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	//pLightObj->Light3D()->SetRadius(500.f);
+
+
+	//SpawnGameObject(pLightObj, Vec3(0.f, -250.f, 0.f), 0);
+
+
+		// 광원 추가
 	CGameObject* pLightObj = new CGameObject;
-	pLightObj->SetName(L"Directional Light");
+	pLightObj->SetName(L"Point Light 1");
 
 	pLightObj->AddComponent(new CTransform);
 	pLightObj->AddComponent(new CLight3D);
-	//pLightObj->Transform()->SetRelativeRot(Vec3(0.f, 0.f, XM_PI / 2.f));
-	
-	// pi/4.f는 45도임 
-	pLightObj->Transform()->SetRelativePos(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
-	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	
-	//pLightObj->Light2D()->SetRadius(500.f);
 
-	SpawnGameObject(pLightObj, Vec3(0.f, 0.f, 0.f), 0);
+	//pLightObj->Transform()->SetRelativeRot(Vec3(XM_PI / 4.f, XM_PI / 4.f, 0.f));
+	//pLightObj->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
+	//pLightObj->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));	
+	//pLightObj->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+
+	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pLightObj->Light3D()->SetLightColor(Vec3(1.f, 0.2f, 0.2f));
+	pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	pLightObj->Light3D()->SetRadius(1000.f);
+
+	SpawnGameObject(pLightObj, Vec3(-500.f, -250.f, 0.f), 0);
+
+
+	pLightObj = new CGameObject;
+	pLightObj->SetName(L"Point Light 2");
+
+	pLightObj->AddComponent(new CTransform);
+	pLightObj->AddComponent(new CLight3D);
+
+	pLightObj->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pLightObj->Light3D()->SetLightColor(Vec3(0.2f, 0.2f, 1.f));
+	pLightObj->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
+	pLightObj->Light3D()->SetRadius(1000.f);
+
+	SpawnGameObject(pLightObj, Vec3(500.f, -250.f, 0.f), 0);
+
+
 
 
 	// 오브젝트 생성
@@ -106,12 +161,13 @@ void CreateTestLevel()
 	pParent->AddComponent(new CPlayerScript);
 
 	pParent->Transform()->SetRelativeScale(Vec3(200.f, 200.f, 200.f));
+	pParent->Transform()->SetRelativeRot(Vec3(XM_PI / 2.f, 0.f, 0.f)); // 90도로 돌려놓기
 
-	//pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
-	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	//pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
-	SpawnGameObject(pParent, Vec3(0.f, 0.f, 500.f), L"Player");
+	SpawnGameObject(pParent, Vec3(0.f, -500.f, 0.f), L"Player");
 
 	
 	// 충돌 시킬 레이어 짝 지정
