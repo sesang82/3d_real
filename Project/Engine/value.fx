@@ -48,6 +48,13 @@ cbuffer MATERIAL : register(b1)
     int g_btex_5;
     int g_btex_6;
     int g_btex_7;   
+    
+    int g_btexcube_0;
+    int g_btexcube_1;
+    
+    int g_btexarr_0;
+    int g_btexarr_1;
+    
 };
 
 cbuffer GLOBAL : register(b2)

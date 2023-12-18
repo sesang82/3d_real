@@ -14,12 +14,13 @@ enum class SKYBOX_TYPE
 class CSkyBox :
     public CRenderComponent
 {
+
 public:
     CSkyBox();
     ~CSkyBox();
 
 public:
-    virtual void finaltick() override {};
+    virtual void finaltick() override;
     virtual void render() override;
 
 
@@ -27,9 +28,11 @@ public:
 
 private:
     SKYBOX_TYPE     m_Type;
+    Ptr<CTexture>   m_SkyBoxTex;
 
 public:
-    void SetSkyBoxType(SKYBOX_TYPE _Type);
+    void SetSkyBoxType(SKYBOX_TYPE _Type); // 이 부분은 컴포넌트UI에다가 만들기(재질UI에 띄우지말고)
+    void SetSkyBoxTexture(Ptr<CTexture> _Tex);
 
 
 

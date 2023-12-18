@@ -654,9 +654,9 @@ void CResMgr::CreateDefaultGraphicsShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASK);
 
 	// Parameter	
-	pShader->AddScalarParam(INT_0, "SkyBox Type");
 
 	pShader->AddTexParam(TEX_0, "Output Texture");
+	pShader->AddTexParam(TEX_CUBE_0, "Cube Texture");
 
 
 	AddRes(pShader->GetKey(), pShader);

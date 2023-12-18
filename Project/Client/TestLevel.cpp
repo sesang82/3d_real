@@ -151,6 +151,8 @@ void CreateTestLevel()
 	pSkyBox->AddComponent(new CSkyBox);
 
 	pSkyBox->Transform()->SetRelativeScale(Vec3(100.f, 100.f, 100.f));
+	pSkyBox->SkyBox()->SetSkyBoxType(SKYBOX_TYPE::CUBE);
+	pSkyBox->SkyBox()->SetSkyBoxTexture(CResMgr::GetInst()->FindRes<CTexture>(L"texture\\skybox\\Sky02.jpg"));
 
 	SpawnGameObject(pSkyBox, Vec3(0.f, 0.f, 0.f), 0);
 
