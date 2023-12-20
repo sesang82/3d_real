@@ -1,6 +1,15 @@
 #pragma once
 
 
+template <typename T, UINT _Size>
+void DeleteArray(T* (&Arr)[_Size])
+{
+	for (UINT i = 0; i < _Size; ++i)
+	{
+		if (nullptr != Arr[i])
+			delete Arr[i];
+	}
+}
 
 // 오브젝트 생성
 class CGameObject;

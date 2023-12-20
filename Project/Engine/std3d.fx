@@ -43,6 +43,7 @@ struct VS_OUT
     
     // 뷰 스페이스 기준으로 라이팅 연산을 위해 아래처럼 이름 지어줌
     float3 vViewPos : POSITION;
+    
     float3 vViewNormal : NORMAL;
     float3 vViewTangent : TANGENT;
     float3 vViewBinormal: BINORMAL;    
@@ -53,7 +54,14 @@ struct VS_OUT
 // Std3DShader
 //
 // Param
+
+// 나중에 반사 계수가 0에 가까워질수록 반사된 환경을 맵핑하는 것의 품질을 저하시키는 것까지 할 것임.
 #define SPEC_COEFF g_float_0 // 반사 계수
+
+// 환경 맵핑이 가능한 큐브텍스처 관련
+#define IS_SKYBOX_ENV   g_btexcube_0
+#define SKYBOX_ENV_TEX  g_cube_0
+
 
 VS_OUT VS_Std3D(VS_IN _in)
 {
@@ -135,7 +143,7 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
             _in.vViewNormal        
         }; // 사용하는 노말 텍스처가 오픈지엘 좌표계를 쓴다면 바이노말에 -를 붙이고, 왼손좌표계dx좌표계를 쓴다면 +를 쓰도록 하는거 만들기
         
-        vViewNormal = mul(vNormal, vRotateMat);        
+        vViewNormal = normalize(mul(vNormal, vRotateMat)); // 방향 값이기 때문에 확실하게 노말라이즈까지 해줌
     }
     
     tLightColor lightcolor = (tLightColor) 0.f;
@@ -167,7 +175,26 @@ float4 PS_Std3D(VS_OUT _in) : SV_Target
                     + vOutColor.xyz * lightcolor.vAmbient.xyz
                     + saturate(g_Light3DBuffer[0].Color.vDiffuse.xyz) * 0.3f * fSpecPow * SPEC_COEFF;
     
-    return vOutColor;
+    
+    // 큐브 메쉬이고, 환경 맵핑을 하려는 것인지에 대한 것
+    if (IS_SKYBOX_ENV)
+    {
+        // 큐브 메쉬이므로 방향값을 이용하여 샘플링하는 방식을 이용한다.
+        float3 vEye = normalize(_in.vViewPos); // 방향값만 취할 것이므로 노말라이즈. 여기서의 eye는 뷰스페이스상의 원점에 있는 카메라
+        float3 vEyeReflect = normalize(reflect(vEye, vViewNormal)); // 둘의 반사광을 구하고 방향만 취한다. vViewNormal은 오브젝트의 호출된 픽셀의 노말 방향 
+        
+        // == 월드 상의 카메라가 오브젝트를 쳐다본 방향으로 튕겨나가는 반사광을 구한다 
+        // 원래는 뷰스페이스 기준으로 그냥 계산했는데 그러다보니 뷰스페이스의 카메라의 z축이 정면만 보고 있어서
+        // 실제로 카메라가 회전할 때 반사되는 그림이 달라져야하는데 똑같아서 뷰의 역행렬을 구해와서 월드 기준의 것으로 갖고 온 것
+        vEyeReflect = normalize(mul(float4(vEyeReflect, 0.f), g_matViewInv));
+        
+        // 재질 계수가 낮을 수록 샘플링되는 품질이 저하되어야하는데 그건 아직 안되서 나중에 해주신다 함.
+        // == 샘플링2로 한건 혹시나 다른 샘플러쓰면 그렇게 될까 싶어서 쌤이 추가해서 해봤는데 안됨
+        vOutColor *= SKYBOX_ENV_TEX.Sample(g_sam_2, vEyeReflect);
+
+    }
+    
+        return vOutColor;
 }
 
 

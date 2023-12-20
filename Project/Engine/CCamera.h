@@ -11,8 +11,12 @@ private:
 
     PROJ_TYPE   m_ProjType;
 
+    // 각 역행렬을 곱해주면 전 단계 스페이스로 이동된다.
     Matrix      m_matView;
+    Matrix      m_matViewInv;
+
     Matrix      m_matProj;
+    Matrix      m_matProjInv;
 
     UINT        m_iLayerMask;
 
@@ -21,6 +25,7 @@ private:
 
     vector<CGameObject*>    m_vecOpaque;
     vector<CGameObject*>    m_vecMask;
+    vector<CGameObject*>    m_vecDecal;
     vector<CGameObject*>    m_vecTransparent;    
     vector<CGameObject*>    m_vecUI;
     vector<CGameObject*>    m_vecPost;
@@ -58,6 +63,7 @@ private:
     void clear();
     void render_opaque();
     void render_mask();
+    void render_decal();
     void render_transparent();
     void render_postprocess();
     void render_ui();

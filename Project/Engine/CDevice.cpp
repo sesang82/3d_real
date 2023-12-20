@@ -156,10 +156,10 @@ int CDevice::CreateView()
     m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)tex2D.GetAddressOf());
     
     // RenderTarget 용 텍스쳐 등록
-    m_RTTex = CResMgr::GetInst()->CreateTexture(L"RenderTargetTex", tex2D);
+    CResMgr::GetInst()->CreateTexture(L"RenderTargetTex", tex2D);
 
     // DepthStencil 용도 텍스쳐 생성
-    m_DSTex = CResMgr::GetInst()->CreateTexture(L"DepthStencilTex"
+    CResMgr::GetInst()->CreateTexture(L"DepthStencilTex"
         , (UINT)m_vRenderResolution.x, (UINT)m_vRenderResolution.y
         , DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL, D3D11_USAGE_DEFAULT);        
 
@@ -315,6 +315,14 @@ int CDevice::CreateSampler()
     tSamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
     DEVICE->CreateSamplerState(&tSamDesc, m_Sampler[1].GetAddressOf());
 
+
+    tSamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    tSamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    tSamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    tSamDesc.Filter = D3D11_FILTER_COMPARISON_ANISOTROPIC;
+    tSamDesc.MaxAnisotropy = 8;
+    DEVICE->CreateSamplerState(&tSamDesc, m_Sampler[2].GetAddressOf());
+
     CONTEXT->VSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
     CONTEXT->HSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
     CONTEXT->DSSetSamplers(0, 1, m_Sampler[0].GetAddressOf());
@@ -327,14 +335,16 @@ int CDevice::CreateSampler()
     CONTEXT->GSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
     CONTEXT->PSSetSamplers(1, 1, m_Sampler[1].GetAddressOf());
 
+    CONTEXT->VSSetSamplers(2, 1, m_Sampler[2].GetAddressOf());
+    CONTEXT->HSSetSamplers(2, 1, m_Sampler[2].GetAddressOf());
+    CONTEXT->DSSetSamplers(2, 1, m_Sampler[2].GetAddressOf());
+    CONTEXT->GSSetSamplers(2, 1, m_Sampler[2].GetAddressOf());
+    CONTEXT->PSSetSamplers(2, 1, m_Sampler[2].GetAddressOf());
+
     return S_OK;
 }
 
-void CDevice::ClearTarget(float(&_color)[4])
-{
-    m_Context->ClearRenderTargetView(m_RTTex->GetRTV().Get(), _color);
-    m_Context->ClearDepthStencilView(m_DSTex->GetDSV().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-}
+
 
 void CDevice::CreateConstBuffer()
 {

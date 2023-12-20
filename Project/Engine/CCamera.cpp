@@ -82,6 +82,9 @@ void CCamera::CalcViewMat()
 	matViewRot._31 = vR.z;	matViewRot._32 = vU.z;	matViewRot._33 = vF.z;
 
 	m_matView = matViewTrans * matViewRot;
+
+	// View 역행렬 구하기
+	m_matViewInv = XMMatrixInverse(nullptr, m_matView);
 }
 
 void CCamera::CalcProjMat()
@@ -102,6 +105,9 @@ void CCamera::CalcProjMat()
 		// 원근 투영
 		m_matProj = XMMatrixPerspectiveFovLH(XM_PI / 2.f, m_fAspectRatio, 1.f, m_Far);
 	}
+
+	// 투영행렬 역행렬 구하기
+	m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
 
 }
 
@@ -169,6 +175,9 @@ void CCamera::SortObject()
 				case SHADER_DOMAIN::DOMAIN_MASK:
 					m_vecMask.push_back(vecObject[j]);
 					break;
+				case SHADER_DOMAIN::DOMAIN_DECAL:
+					m_vecDecal.push_back(vecObject[j]);
+					break;
 				case SHADER_DOMAIN::DOMAIN_TRANSPARENT:
 					m_vecTransparent.push_back(vecObject[j]);
 					break;
@@ -188,11 +197,15 @@ void CCamera::render()
 {
 	// 행렬 업데이트
 	g_transform.matView = m_matView;
+	g_transform.matViewInv = m_matViewInv;
+
 	g_transform.matProj = m_matProj;
+	g_transform.matProjInv = m_matProjInv;
 
 	// 쉐이더 도메인에 따라서 순차적으로 그리기
 	render_opaque();
 	render_mask();
+	render_decal();
 	render_transparent();
 
 	// PostProcess - 후처리
@@ -207,6 +220,7 @@ void CCamera::clear()
 {
 	m_vecOpaque.clear();
 	m_vecMask.clear();
+	m_vecDecal.clear();
 	m_vecTransparent.clear();
 	m_vecPost.clear();
 	m_vecUI.clear();
@@ -225,6 +239,14 @@ void CCamera::render_mask()
 	for (size_t i = 0; i < m_vecMask.size(); ++i)
 	{
 		m_vecMask[i]->render();
+	}
+}
+
+void CCamera::render_decal()
+{
+	for (size_t i = 0; i < m_vecDecal.size(); ++i)
+	{
+		m_vecDecal[i]->render();
 	}
 }
 

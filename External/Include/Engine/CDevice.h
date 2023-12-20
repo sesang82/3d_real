@@ -15,11 +15,12 @@ private:
 
 	ComPtr<IDXGISwapChain>			m_SwapChain;
 
-	Ptr<CTexture>					m_RTTex;
-	Ptr<CTexture>					m_DSTex;
+	// === 디퍼드 렌더링 방식으로 바꿈으로써 이제 rt와 깊이텍스처는 MRT 클래스에서 관리함
+	//Ptr<CTexture>					m_RTTex;
+	//Ptr<CTexture>					m_DSTex;
 
-	// Sampler
-	ComPtr<ID3D11SamplerState>		m_Sampler[2];
+	// Sampler (샘플러 마지막꺼는 테스트용이므로 안써도 됨) 
+	ComPtr<ID3D11SamplerState>		m_Sampler[3];
 
 	// RasterizerState
 	ComPtr<ID3D11RasterizerState>	m_RSState[(UINT)RS_TYPE::END];
@@ -43,11 +44,14 @@ private:
 
 public:
 	int init(HWND _hWnd, UINT _iWidth, UINT _iHeight);
-	void ClearTarget(float(&_color)[4]);
-	void OMSet() { m_Context->OMSetRenderTargets(1, m_RTTex->GetRTV().GetAddressOf(), m_DSTex->GetDSV().Get()); }
 	void Present()	{ m_SwapChain->Present(0, 0); }
-
 	Vec2 GetRenderResolution() { return m_vRenderResolution; }
+
+	// ==== MRT 클래스로 이동
+	//void ClearTarget(float(&_color)[4]);
+	//void OMSet() { m_Context->OMSetRenderTargets(1, m_RTTex->GetRTV().GetAddressOf(), m_DSTex->GetDSV().Get()); }
+
+
 
 private:
 	int CreateSwapChain();

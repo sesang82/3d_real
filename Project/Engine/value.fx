@@ -3,11 +3,19 @@
 
 #include "struct.fx"
 
+
+// 만약에 뷰스페이스로 보내진 좌표에 뷰 역행렬을 곱하면 이전 스페이스인 월드 기준의 좌표가 나오게 된다.
+// 다른 행렬들도 마찬가지.
 cbuffer TRANSFORM : register(b0)
 {
     row_major matrix g_matWorld;
+    row_major matrix g_matWorldInv;
+    
     row_major matrix g_matView;
+    row_major matrix g_matViewInv;
+    
     row_major matrix g_matProj;
+    row_major matrix g_matProjInv;
     
     row_major matrix g_matWV;
     row_major matrix g_matWVP;
@@ -88,6 +96,7 @@ StructuredBuffer<tLightInfo> g_Light3DBuffer : register(t13);
 
 SamplerState g_sam_0 : register(s0);
 SamplerState g_sam_1 : register(s1);
+SamplerState g_sam_2 : register(s2); // 테스트용
 
 
 #define PI 3.1415926535f

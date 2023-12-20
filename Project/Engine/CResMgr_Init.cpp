@@ -660,6 +660,37 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 
 	AddRes(pShader->GetKey(), pShader);
+
+
+
+	// ============================
+	// Decal Shader
+	// RS_TYPE : CULL_FRONT
+	// DS_TYPE : NoTest_NoWirte
+	// BS_TYPE : DEFAULT
+	// Domain  : Decal
+	// ============================
+	//pShader = new CGraphicsShader;
+	//pShader->SetKey(L"DecalShader");
+	
+	//pShader->CreateVertexShader(L"shader\\decal.fx", "VS_Decal");
+	//pShader->CreatePixelShader(L"shader\\decal.fx", "PS_");
+	
+	//pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	////pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	//pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	//pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DECAL);
+	
+	//// Parameter	
+	//pShader->AddTexParam(TEX_0, "Output Texture");
+	
+	//AddRes(pShader->GetKey(), pShader);
+
+
+
+
+
+
 }
 
 void CResMgr::CreateDefaultComputeShader()

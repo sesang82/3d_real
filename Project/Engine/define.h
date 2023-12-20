@@ -190,10 +190,12 @@ enum class PROJ_TYPE
 	PERSPECTIVE,
 };
 
+// 카메라 클래스에서 쉐이더에 붙은 도메인에 따라 렌더링 순서 정해둠 
 enum class SHADER_DOMAIN
 {
 	DOMAIN_OPAQUE,		// 불투명 오브젝트
 	DOMAIN_MASK,		// 불투명, 완전 투명
+	DOMAIN_DECAL,		// 데칼 오브젝트
 	DOMAIN_TRANSPARENT,	// 반투명
 	DOMAIN_POSTPROCESS, // 후 처리
 	DOMAIN_UI,
@@ -262,6 +264,19 @@ enum class PARTICLE_MODULE
 	NOISE_FORCE,
 	RENDER,
 	DUMMY_3,
+
+	END,
+};
+
+enum class MRT_TYPE
+{
+	SWAPCHAIN, // 여러 렌더타겟에 그려진 것은 해당 유형 렌더타겟에 하나로 합쳐져서 최종적으로 present 될 것이다.
+
+	DEFERRED,
+
+	LIGHT,
+
+	SHADOWMAP,
 
 	END,
 };
