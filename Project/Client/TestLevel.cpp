@@ -157,22 +157,21 @@ void CreateTestLevel()
 
 	SpawnGameObject(pSkyBox, Vec3(0.f, 0.f, 0.f), 0);
 
-	// 오브젝트 생성
-	CGameObject* pParent = new CGameObject;
-	pParent->SetName(L"Player");
-	pParent->AddComponent(new CTransform);
-	pParent->AddComponent(new CMeshRender);
-	pParent->AddComponent(new CPlayerScript);
+	//// 오브젝트 생성
+	//CGameObject* pParent = new CGameObject;
+	//pParent->SetName(L"Player");
+	//pParent->AddComponent(new CTransform);
+	//pParent->AddComponent(new CMeshRender);
+	//pParent->AddComponent(new CPlayerScript);
 
-	pParent->Transform()->SetRelativeScale(Vec3(200.f, 200.f, 200.f));
-	pParent->Transform()->SetRelativeRot(Vec3(XM_PI / 2.f, 0.f, 0.f)); // 90도로 돌려놓기
+	//pParent->Transform()->SetRelativeScale(Vec3(200.f, 200.f, 200.f));
+	//pParent->Transform()->SetRelativeRot(Vec3(XM_PI / 2.f, 0.f, 0.f)); // 90도로 돌려놓기
 
-	//pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	//pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-	pParent->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
-	pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
+	//pParent->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3D_DefferedMtrl"));
+	//pParent->MeshRender()->GetMaterial()->SetTexParam(TEX_0, CResMgr::GetInst()->FindRes<CTexture>(L"texture\\skybox\\Sky02.jpg"));
 
-	SpawnGameObject(pParent, Vec3(0.f, -500.f, 0.f), L"Player");
+	//SpawnGameObject(pParent, Vec3(0.f, -500.f, 0.f), L"Player");
 
 	
 	// 충돌 시킬 레이어 짝 지정

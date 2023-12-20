@@ -40,6 +40,7 @@ private:
     void Clear();
 
     void CreateMRT();
+    void ClearMRT();
 
 
 public:
@@ -66,6 +67,9 @@ public:
     }
 
     void CopyRenderTarget();
+
+public:
+    CMRT* GetMRT(MRT_TYPE _Type) { return m_MRT[(UINT)_Type]; }
 
 
 

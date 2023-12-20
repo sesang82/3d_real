@@ -193,13 +193,16 @@ enum class PROJ_TYPE
 // 카메라 클래스에서 쉐이더에 붙은 도메인에 따라 렌더링 순서 정해둠 
 enum class SHADER_DOMAIN
 {
-	DOMAIN_OPAQUE,		// 불투명 오브젝트
-	DOMAIN_MASK,		// 불투명, 완전 투명
-	DOMAIN_DECAL,		// 데칼 오브젝트
-	DOMAIN_TRANSPARENT,	// 반투명
-	DOMAIN_POSTPROCESS, // 후 처리
+	DOMAIN_DEFERRED,		// 지연 렌더링 오브젝트
+	DOMAIN_DEFERRED_DECAL,	// Deferred Decal(광원 적용 가능한 Decal)
+
+	DOMAIN_OPAQUE,			// 불투명 오브젝트
+	DOMAIN_MASK,			// 불투명, 완전 투명
+	DOMAIN_DECAL,			// 데칼 오브젝트
+	DOMAIN_TRANSPARENT,		// 반투명
+	DOMAIN_POSTPROCESS,		// 후 처리
 	DOMAIN_UI,
-	DOMAIN_UNDEFINED,	// 미정
+	DOMAIN_UNDEFINED,		// 미정
 };
 
 

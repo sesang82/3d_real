@@ -42,17 +42,6 @@ CRenderMgr::~CRenderMgr()
 
 void CRenderMgr::render()
 {
-    // 렌더링 시작
-    float arrColor[4] = { 0.2f, 0.2f, 0.2f, 1.f };
-
-    //CDevice::GetInst()->ClearTarget(arrColor);
-
-    // 스왑체인에 바로 출력하는 forward형식이 아닌 defered 렌더링 형식으로 출력
-    m_MRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearTarget();
-
-    // 출력 타겟 지정    
-    //CDevice::GetInst()->OMSet();
-    m_MRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
 
     // 광원 및 전역 데이터 업데이트 및 바인딩
     UpdateData();

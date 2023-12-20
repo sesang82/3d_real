@@ -14,6 +14,9 @@
 #include "CMaterial.h"
 #include "CGraphicsShader.h"
 
+#include "CRenderMgr.h"
+#include "CMRT.h"
+
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -202,7 +205,21 @@ void CCamera::render()
 	g_transform.matProj = m_matProj;
 	g_transform.matProjInv = m_matProjInv;
 
-	// 쉐이더 도메인에 따라서 순차적으로 그리기
+	// == 쉐이더 도메인에 따라서 순차적으로 그리기
+	// Deferred MRT 로 변경
+	// Deferred 물체들을 Deferred MRT 에 그리기
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::DEFERRED)->OMSet(true); // DEFERRED 세트에 속하는 렌더타겟들은 하나의 깊이텍스처를 공유해서 사용
+	render_deferred();
+
+	// Light MRT 로 변경
+	// 물체들에 적용될 광원을 그리기
+
+
+	// Deferred 물체에 광원 적용시키기
+
+	// Deferred MRT 에 그린 물체들을 다시 SwapChain 으로 옮기기
+		
+	// SwapChain MRT 로 변경
 	render_opaque();
 	render_mask();
 	render_decal();
@@ -218,12 +235,29 @@ void CCamera::render()
 
 void CCamera::clear()
 {
+	m_vecDeferred.clear();
+	m_vecDeferredDecal.clear();
+
 	m_vecOpaque.clear();
 	m_vecMask.clear();
 	m_vecDecal.clear();
 	m_vecTransparent.clear();
 	m_vecPost.clear();
 	m_vecUI.clear();
+}
+
+void CCamera::render_deferred()
+{
+	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
+	{
+		m_vecDeferred[i]->render();
+	}
+
+	for (size_t i = 0; i < m_vecDeferredDecal.size(); ++i)
+	{
+		m_vecDeferredDecal[i]->render();
+	}
+
 }
 
 void CCamera::render_opaque()

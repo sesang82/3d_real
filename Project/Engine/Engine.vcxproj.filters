@@ -526,5 +526,8 @@
     <FxCompile Include="decal.fx">
       <Filter>Source\08. ShaderCode\Render</Filter>
     </FxCompile>
+    <FxCompile Include="std3d_deferred.fx">
+      <Filter>Source\08. ShaderCode\Render</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

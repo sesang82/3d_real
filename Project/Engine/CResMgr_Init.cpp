@@ -664,6 +664,30 @@ void CResMgr::CreateDefaultGraphicsShader()
 
 
 	// ============================
+	// Std3D_Deferred
+	// RS_TYPE : CULL_FRONT
+	// DS_TYPE : LESS
+	// BS_TYPE : DEFAULT
+	// Domain : Deferred
+	// ============================
+
+	pShader = new CGraphicsShader;
+	pShader->SetKey(L"Std3D_DeferredShader");
+	
+	pShader->CreateVertexShader(L"shader\\std3d_deferred.fx", "VS_Std3D_Deferred");
+	pShader->CreatePixelShader(L"shader\\std3d_deferred.fx", "PS_Std3D_Deferred");
+
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetDSType(DS_TYPE::LESS_EQUAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+
+	// Parameter	
+	pShader->AddTexParam(TEX_0, "Output Texture");
+
+	AddRes(pShader->GetKey(), pShader);
+
+
+	// ============================
 	// Decal Shader
 	// RS_TYPE : CULL_FRONT
 	// DS_TYPE : NoTest_NoWirte
@@ -778,6 +802,11 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindRes<CGraphicsShader>(L"SkyBoxShader"));
 	AddRes(L"SkyBoxMtrl", pMtrl);
+
+	// Std3D_DeferredShader
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindRes<CGraphicsShader>(L"Std3D_DeferredShader"));
+	AddRes(L"Std3D_DefferedMtrl", pMtrl);
 
 
 

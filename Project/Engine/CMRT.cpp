@@ -38,7 +38,10 @@ void CMRT::ClearTarget()
 
 }
 
-void CMRT::OMSet()
+// OMSet 단계에 출력 타겟 지정    
+// MRT 세트를 만들 때 깊이 텍스처를 같이 만들지 않고, 바인딩되어있던 이전 다른 세트의 깊이 텍스처를 갖다 쓰는 부분도 있어서
+// 그것까지 고려하여 설계함
+void CMRT::OMSet(bool _bStay)
 {
 	ID3D11RenderTargetView* arrRTV[8] = {};
 
@@ -47,5 +50,26 @@ void CMRT::OMSet()
 		arrRTV[i] = m_arrRT[i]->GetRTV().Get();
 	}
 
-	CONTEXT->OMSetRenderTargets(m_RTCount, arrRTV, m_DSTex->GetDSV().Get());
+
+	if (nullptr != m_DSTex)
+	{
+		CONTEXT->OMSetRenderTargets(m_RTCount, arrRTV, m_DSTex->GetDSV().Get());
+	}
+
+	// 해당 세트에 깊이 텍스처가 없다면
+	else
+	{
+		ComPtr<ID3D11DepthStencilView> pDSV = nullptr;
+
+		if (_bStay)
+		{
+			CONTEXT->OMGetRenderTargets(0, nullptr, pDSV.GetAddressOf());
+
+		}
+
+		CONTEXT->OMSetRenderTargets(m_RTCount, arrRTV, pDSV.Get());
+
+
+
+	}
 }

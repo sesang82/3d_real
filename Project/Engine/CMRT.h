@@ -23,14 +23,14 @@ private:
     UINT            m_RTCount;
     Ptr<CTexture>   m_DSTex;
 
-    Vec4            m_ClearColor[8];
+    Vec4            m_ClearColor[8]; // 렌더타겟마다 초기화 색상을 각기 다르게 지정해줌
     D3D11_VIEWPORT  m_Viewport;
 
 public:
     void Create(Ptr<CTexture>* _arrRTTex, UINT _RTCount, Ptr<CTexture> _DSTex);
     void SetClearColor(Vec4 _ClearColor, UINT _RTIdx) { m_ClearColor[_RTIdx] = _ClearColor; }
     void ClearTarget();
-    void OMSet();
+    void OMSet(bool _bStay = false);
 
 
 
